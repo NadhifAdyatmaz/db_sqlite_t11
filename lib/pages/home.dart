@@ -14,6 +14,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int count = 0;
   List<Item> itemList = [];
+
+  @override
+  void initState() {
+    updateListView();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,12 +38,22 @@ class _HomeState extends State<Home> {
                 width: double.infinity,
                 child: ElevatedButton(
                   child: const Text('Tambah Item'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey,
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const EntryForm()),
-                    );
+                        builder: (context) => const EntryForm(),
+                      ),
+                    ).then((value) {
+                      updateListView();
+                    });
                   },
                 ),
               ),
@@ -61,28 +78,32 @@ class _HomeState extends State<Home> {
                   itemList[index].name,
                   style: textStyle,
                 ),
-                subtitle: Text(itemList[index].price.toString()),
+                subtitle: Text('Harga: ${itemList[index].price.toString()}'),
                 trailing: GestureDetector(
                   child: const Icon(Icons.delete),
                   onTap: () async {
-                    // 3 TODO: delete by id
+                    await SQLHelper.deleteItem(itemList[index].id);
+                    updateListView();
                   },
                 ),
                 onTap: () async {
-                  /* var item =await navigateToEntryForm(context, itemList[index]); */
-                  // 4 TODO: edit by id
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EntryForm(item: itemList[index]),
+                    ),
+                  ).then((value) {
+                    updateListView();
+                  });
                 },
               ),
             ));
   }
 
-  /* Future<Item> navigateToEntryForm(BuildContext context, Item? item) async {
- var result = await Navigator.push(
- context,
- MaterialPageRoute(builder: (context) => const EntryForm()),
- );
- return result;
- } */
+  void deleteItem(int id) async {
+    await SQLHelper.deleteItem(id);
+    updateListView();
+  }
 
   void updateListView() {
     final Future<Database> dbFuture = SQLHelper.db();

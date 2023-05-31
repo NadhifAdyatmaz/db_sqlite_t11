@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../models/item.dart';
+import '../sql/sqlhelper.dart';
 
 class EntryForm extends StatefulWidget {
   const EntryForm({
     Key? key,
-    Item? item,
+    this.item,
   }) : super(key: key);
+
+  final Item? item;
 
   @override
   State<EntryForm> createState() => EntryFormState();
 }
 
 class EntryFormState extends State<EntryForm> {
-  Item item = Item(name: '', price: 0);
+  late Item item = Item(name: '', price: 0);
+
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    if (item != null) {
+    if (widget.item != null) {
       nameController.text = item.name;
       priceController.text = item.price.toString();
     }
     return Scaffold(
       appBar: AppBar(
-        title: item == null ? const Text('Tambah') : const Text('Ubah'),
+        title: widget.item == null ? const Text('Tambah') : const Text('Ubah'),
         leading: const Icon(Icons.keyboard_arrow_left),
       ),
       body: ListView(
@@ -72,17 +78,25 @@ class EntryFormState extends State<EntryForm> {
                       textScaleFactor: 1.5,
                     ),
                     onPressed: () {
-                      if (item == null) {
-// tambah data
+                      if (widget.item == null) {
+                        print('database');
+                        // tambah data
                         item = Item(
                             name: nameController.text,
                             price: int.parse(priceController.text));
+                        final Future<Database> dbFuture = SQLHelper.db();
+                        Future<int> id = SQLHelper.createItem(item);
+                        print(id);
                       } else {
-// ubah data
+                        // ubah data
+                        item.id = widget.item!.id;
                         item.name = nameController.text;
                         item.price = int.parse(priceController.text);
+                        SQLHelper.updateItem(item);
                       }
-// kembali ke layar sebelumnya dengan membawa objek item
+                      print('Disini Datanya');
+                      // kembali ke layar sebelumnya dengan membawa objek item
+                      print(item.name);
                       Navigator.pop(context, item);
                     },
                   ),
@@ -90,7 +104,7 @@ class EntryFormState extends State<EntryForm> {
                 Container(
                   width: 5.0,
                 ),
-// tombol batal
+                // tombol batal
                 Expanded(
                   child: ElevatedButton(
                     child: const Text(

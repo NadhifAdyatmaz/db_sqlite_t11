@@ -5,6 +5,10 @@ class Item {
 
   int get id => _id;
 
+  set id(int id) {
+    _id = id;
+  }
+
   Item({required this.name, required this.price});
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -14,6 +18,6 @@ class Item {
   }
 
   Map<String, dynamic> toMap() {
-    return {'id': _id, 'name': name, 'price': price};
+    return {'name': name, 'price': price};
   }
 }

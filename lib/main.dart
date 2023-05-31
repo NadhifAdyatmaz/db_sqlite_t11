@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Tambahkan Item - Habibie | 1234567',
+      title: 'Tambahkan Item - NDF | 1234567',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
