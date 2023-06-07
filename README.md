@@ -2,6 +2,11 @@
 
 A new Flutter project.
 
+-- UPDATE ATRIBUTE
+
+![update atribute](images/atribute.png)
+
+
 -- Main Page
 
 ![main page](images/mainpage.png)
