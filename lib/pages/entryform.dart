@@ -17,16 +17,25 @@ class EntryForm extends StatefulWidget {
 }
 
 class EntryFormState extends State<EntryForm> {
-  late Item item = Item(name: '', price: 0);
+  late Item item = Item(
+    kode: '',
+    name: '',
+    price: 0,
+    stok: 0,
+  );
 
+  TextEditingController kodeController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController stokController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     if (widget.item != null) {
+      kodeController.text = item.kode;
       nameController.text = item.name;
       priceController.text = item.price.toString();
+      stokController.text = item.stok.toString();
     }
     return Scaffold(
       appBar: AppBar(
@@ -35,6 +44,21 @@ class EntryFormState extends State<EntryForm> {
       ),
       body: ListView(
         children: <Widget>[
+          // kode barang
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+            child: TextField(
+                controller: kodeController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                    labelText: 'Kode Barang',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    )),
+                onChanged: (value) {
+                  // TODO: method untuk form nama barang
+                }),
+          ),
           // nama barang
           Padding(
             padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -65,6 +89,21 @@ class EntryFormState extends State<EntryForm> {
                   // TODO: method untuk form harga barang
                 }),
           ),
+          // harga barang
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+            child: TextField(
+                controller: stokController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    labelText: 'Stok Barang',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    )),
+                onChanged: (value) {
+                  // TODO: method untuk form harga barang
+                }),
+          ),
           // tombol button
           Padding(
             padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -82,16 +121,20 @@ class EntryFormState extends State<EntryForm> {
                         print('database');
                         // tambah data
                         item = Item(
+                            kode: kodeController.text,
                             name: nameController.text,
-                            price: int.parse(priceController.text));
+                            price: int.parse(priceController.text),
+                            stok: int.parse(stokController.text));
                         final Future<Database> dbFuture = SQLHelper.db();
                         Future<int> id = SQLHelper.createItem(item);
                         print(id);
                       } else {
                         // ubah data
                         item.id = widget.item!.id;
+                        item.kode = kodeController.text;
                         item.name = nameController.text;
                         item.price = int.parse(priceController.text);
+                        item.stok = int.parse(stokController.text);
                         SQLHelper.updateItem(item);
                       }
                       print('Disini Datanya');

@@ -8,8 +8,10 @@ class SQLHelper {
     await database.execute('''
       CREATE TABLE items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      kode TEXT,
       name TEXT,
-      price INTEGER
+      price INTEGER,
+      stok INTEGER
       )
     ''');
   }
